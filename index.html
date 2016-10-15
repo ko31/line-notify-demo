@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LINE Notify Demo</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="col-md-6 col-md-offset-3">
+    <h1>LINE Notify Demo</h1>
+    <p>LINE Notify の動作確認ができるフォームです。</p>
+    <form id="form_notify">
+        <div class="form-group" id="name-field">
+            <label for="access_token" class="col-lg-2 control-label">アクセストークン（必須）</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="access_token" name="access_token" placeholder="アクセストークンを入力してください" required>
+            </div>
+        </div>
+        <div class="form-group" id="message-field">
+            <label for="message" class="col-lg-2 control-label">メッセージ（必須）</label>
+            <div class="col-lg-10">
+                <textarea class="form-control" rows="3" id="message" name="message" placeholder="メッセージを入力してください" required></textarea>
+            </div>
+        </div>
+        <div class="form-group" id="name-field">
+            <label for="image" class="col-lg-2 control-label">画像URL（任意）</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" id="image" name="image" placeholder="画像URLがあれば入力してください">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button id="submit" type="submit" class="btn btn-success">送信する</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <span id="result"></span>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    $('#form_notify').submit(function(){
+        var access_token = $("#access_token").val();
+        var message = $("#message").val();
+        var image = $("#image").val();
+        $.ajax({
+            type: "POST",
+            url: "send.php",
+            timeout: 1000,
+            cache: false,
+            data: {
+                'access_token': access_token,
+                'message': message,
+                'image': image 
+            },
+            dataType: 'json'
+        })
+        .done(function (data, textStatus, jqXHR) {
+            console.log("done");
+            $("#result").html("status: " + data.status + "<br>message: " + data.message);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log("fail");
+            $("#result").html("request failed.");
+        })
+        .always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+            console.log("always");
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>
